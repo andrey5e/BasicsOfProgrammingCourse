@@ -1,14 +1,24 @@
-#include <stdio.h>
-#include "libs/data_structures/bitset/bitset.h"
+#include <stdlib.h>
+#include <stdint.h>
+#include "libs/data_structures/vector/vector.h"
+
+vector createVector(size_t n) {
+    vector vec;
+    vec.data = (int *)malloc(n * sizeof(int));
+    if (vec.data == NULL) {
+        // обработка ошибки при выделении памяти
+        exit(EXIT_FAILURE);
+    }
+
+    vec.size = n;
+    vec.capacity = n;
+
+    return vec;
+}
 
 int main() {
-    bitset a = bitset_create(16);
-    bitset_insert(&a, 1);
-    bitset_insert(&a, 12);
-    bitset_insert(&a, 6);
-    bitset_insert(&a, 8);
-    bitset_insert(&a, 10);
-    bitset_print(a);
+    size_t n = 10;
+    vector v = createVector(n);
 
     return 0;
 }

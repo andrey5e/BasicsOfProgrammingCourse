@@ -1,128 +1,52 @@
-#ifndef UNTITLED1_ARRAY_H
-#define UNTITLED1_ARRAY_H
+#include <stddef.h>
 
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
+// ввод массива data размера n
+void inputArray_ (int *a , size_t n ) ;
+// вывод массива data размера n
+void outputArray_ ( const int *a , size_t n ) ;
 
-void inputArray(int *a, const int n) {
-    for (size_t i = 0; i < n; i++)
-        scanf("%d", &a[i]);
-}
+// возвращает значение первого вхождения элемента x
+// в массиве a размера n при его наличии, иначе - n
+size_t linearSearch_ ( const int *a , const size_t n , int x ) ;
 
-void outputArray(int *a, const int n) {
-    for (size_t i = 0; i < n; i++)
-        printf("%d ", a[i]);
-    printf("\n");
-}
+// возвращает позицию вхождения элемента x
+// в отсортированном массиве a размера n при его наличии, иначе - SIZE_MAX
+size_t binarySearch_ ( const int *a , const size_t n , int x ) ;
+// возвращает позицию первого элемента равного или большего x
+// в отсортированном массиве a размера n
+// при отсутствии такого элемента возвращает n
+size_t binarySearchMoreOrEqual_ ( const int *a , const size_t n , int x ) ;
 
-unsigned getIndex(const int *a, const size_t n, const int x) {
-    for (size_t i = 0; i < n; i++) {
-        if (a[i] == x) {
-            return i;
-        }
-    }
-    return -1;
-}
+// вставка элемента со значением value
+// в массив data размера n на позицию pos
+void insert_ (int *a , size_t *n , size_t pos , int value ) ;
+// добавление элемента value в конец массива data размера n
+void append_ (int *a , size_t *n , int value ) ;
+// удаление из массива data размера n элемента на позиции pos
+// с сохранением порядка оставшихся элементов
+void deleteByPosSaveOrder_ (int *a , size_t *n , size_t pos ) ;
+// удаление из массива data размера n элемента на позиции pos
+// без сохранения порядка оставшихся элементов
+// размер массива data уменьшается на единицу
+void deleteByPosUnsaveOrder_ (int *a , size_t *n , size_t pos ) ;
 
-size_t binarySearch(const int *a, size_t n, int x) {
-    size_t left = 0;
-    size_t right = n - 1;
-    while (left <= right) {
-        size_t middle = left + (right - left) / 2;
-        if (a[middle] < x)
-            left = middle + 1;
-        else if (a[middle] > x)
-            right = middle - 1;
-        else
-            return middle;
-    }
-    return n;
-}
+// возвращает значение ’истина’ если все элементы
+// массива data размера n соответствует функции-предикату predicate
+// иначе - ’ложь’
+int all_ ( const int* a , size_t n , int (* predicate ) (int) ) ;
+// возвращает значение ’истина’ если хотя бы один элемент
+// массива data размера n соответствует функции-предикату predicate
+// иначе - ’ложь’
+int any_ ( const int *a , size_t n , int (* predicate ) (int) ) ;
+// применяет функцию predicate ко всем элементам массива source
+// размера n и сохраняет результат в массиве dest размера n
+void forEach_(const int *source, int *dest, size_t n, const int (*
+predicate )(int));
+// возвращает количество элементов массива data размера n
+// удовлетворяющих функции-предикату predicate
+int countIf_ ( const int * a , size_t n , int (* predicate ) (int) ) ;
 
-size_t binarySearchMoreOrEqual(const int *a, size_t n, int x) {
-    if (a[0] >= x)
-        return 0;
-    size_t left = 0;
-    size_t right = n;
-    while (right - left > 1) {
-        size_t middle = left + (right - left) / 2;
-        if (a[middle] < x)
-            left = middle;
-        else
-            right = middle;
-    }
-    return right;
-}
-
-void insert(int *a, int *n, const size_t pos, const int value) {
-    for (size_t i = *n - 1; i >= pos; i--)
-        a[i + 1] = a[i];
-    a[pos] = value;
-    (*n)++;
-}
-
-void append(int *const a, size_t *const n, const int value) {
-    a[*n] = value;
-    (*n)++;
-}
-
-void deleteByPosSaveOrder(int *a, int *n, const size_t pos) {
-    for (size_t i = pos; i < *n - 1; i++)
-        a[i] = a[i + 1];
-    (*n)--;
-}
-
-void deleteByPosUnsaveOrder(int *a, int *n, size_t pos) {
-    a[pos] = a[*n - 1];
-    (*n)--;
-}
-
-bool any(int *a, size_t n, int (*predicate)(int)) {
-    for (size_t i = 0; i < n; i++) {
-        if (predicate(a[i])) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-bool all(int *a, size_t n, int (*predicate)(int)) {
-    int is_predicate = true;
-    for (size_t i = 0; i < n; i++) {
-        if (!predicate(a[i])) {
-            is_predicate = false;
-        }
-    }
-    return is_predicate;
-}
-
-void forEach(int *a, size_t n, int (*predicate)(int)) {
-    for (size_t i = 0; i < n; i++) {
-        a[i] = predicate(a[i]);
-    }
-}
-
-int countIf(const int *const a, const size_t n, int (*predicate )(int)) {
-    int count = 0;
-    for (size_t i = 0; i < n; i++)
-        count += predicate(a[i]);
-    return count;
-}
-
-void deleteIf(int *const a, size_t *const n, int (*deletePredicate )(int)) {
-    size_t iRead = 0;
-    while (iRead < *n && !deletePredicate(a[iRead]))
-        iRead++;
-    size_t iWrite = iRead;
-    while (iRead < *n) {
-        if (!deletePredicate(a[iRead])) {
-            a[iWrite] = a[iRead];
-            iWrite++;
-        }
-        iRead++;
-    }
-    *n = iWrite;
-}
-
-#endif //UNTITLED1_ARRAY_H
+// удаляет из массива data размера n все элементы, удовлетворяющие
+// функции-предикату deletePredicate, записывает в n новый размер
+// массива
+void deleteIf_ (int * a , size_t * n , int (* deletePredicate ) (int) ) ;

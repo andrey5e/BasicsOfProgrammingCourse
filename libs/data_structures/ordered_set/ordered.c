@@ -1,18 +1,8 @@
-#ifndef UNTITLED1_ORDERED_H
-#define UNTITLED1_ORDERED_H
-
-#include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <assert.h>
 #include <malloc.h>
-#include "libs/algorithms/array/array.h"
-
-typedef struct ordered_array_set {
-    int *data;
-    size_t size;
-    size_t capacity;
-} ordered_array_set;
+#include "ordered.h"
 
 ordered_array_set ordered_array_set_create(size_t capacity) {
     ordered_array_set set;
@@ -170,5 +160,3 @@ void ordered_array_set_print(ordered_array_set set) {
 void ordered_array_set_delete(ordered_array_set set) {
     free(set.data);
 }
-
-#endif //UNTITLED1_ORDERED_H

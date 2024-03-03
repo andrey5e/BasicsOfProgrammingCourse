@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <assert.h>
 #include <malloc.h>
 
 typedef struct bitset {

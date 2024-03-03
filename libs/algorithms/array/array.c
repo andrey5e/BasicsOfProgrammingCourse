@@ -1,6 +1,3 @@
-#ifndef UNTITLED1_ARRAY_H
-#define UNTITLED1_ARRAY_H
-
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
@@ -14,6 +11,29 @@ void outputArray(int *a, const int n) {
     for (size_t i = 0; i < n; i++)
         printf("%d ", a[i]);
     printf("\n");
+}
+
+void append(int *const a, size_t *const n, const int value) {
+    a[*n] = value;
+    (*n)++;
+}
+
+void insert(int *a, int *n, const size_t pos, const int value) {
+    for (size_t i = *n - 1; i >= pos; i--)
+        a[i + 1] = a[i];
+    a[pos] = value;
+    (*n)++;
+}
+
+void deleteByPosSaveOrder(int *a, int *n, const size_t pos) {
+    for (size_t i = pos; i < *n - 1; i++)
+        a[i] = a[i + 1];
+    (*n)--;
+}
+
+void deleteByPosUnsaveOrder(int *a, int *n, size_t pos) {
+    a[pos] = a[*n - 1];
+    (*n)--;
 }
 
 unsigned getIndex(const int *a, const size_t n, const int x) {
@@ -53,29 +73,6 @@ size_t binarySearchMoreOrEqual(const int *a, size_t n, int x) {
             right = middle;
     }
     return right;
-}
-
-void insert(int *a, int *n, const size_t pos, const int value) {
-    for (size_t i = *n - 1; i >= pos; i--)
-        a[i + 1] = a[i];
-    a[pos] = value;
-    (*n)++;
-}
-
-void append(int *const a, size_t *const n, const int value) {
-    a[*n] = value;
-    (*n)++;
-}
-
-void deleteByPosSaveOrder(int *a, int *n, const size_t pos) {
-    for (size_t i = pos; i < *n - 1; i++)
-        a[i] = a[i + 1];
-    (*n)--;
-}
-
-void deleteByPosUnsaveOrder(int *a, int *n, size_t pos) {
-    a[pos] = a[*n - 1];
-    (*n)--;
 }
 
 bool any(int *a, size_t n, int (*predicate)(int)) {
@@ -124,5 +121,3 @@ void deleteIf(int *const a, size_t *const n, int (*deletePredicate )(int)) {
     }
     *n = iWrite;
 }
-
-#endif //UNTITLED1_ARRAY_H

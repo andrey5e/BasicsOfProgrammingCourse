@@ -1,151 +1,45 @@
-#ifndef UNTITLED1_BITSET_H
-#define UNTITLED1_BITSET_H
-
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <assert.h>
-#include <malloc.h>
+# include <stdint.h>
+# include <stdbool.h>
 
 typedef struct bitset {
-    uint32_t *values;
-    uint32_t maxValue;
-} bitset;
+    uint32_t values ; // множество
+    uint32_t maxValue ; // максимальный элемент универсума
+} bitset ;
 
-bitset bitset_create(unsigned maxValue) {
-    bitset set;
-    set.maxValue = maxValue;
+// возвращает пустое множество c универсумом 0, 1,..., maxValue
+bitset bitset_create ( unsigned maxValue );
 
-    uint32_t arraySize = (maxValue + 31) / 32;
+// возвращает значение ’истина’, если значение value имеется в множестве set
+// иначе - ’ложь’
+bool bitset_in ( bitset set , unsigned int value );
 
-    set.values = (uint32_t *)calloc(arraySize, sizeof(uint32_t));
+// возвращает значение ’истина’, если множества set1 и set2 равны// иначе - ’ложь’
+bool bitset_isEqual ( bitset set1 , bitset set2 );
 
-    return set;
-}
+// возвращает значение ’истина’ если множество subset
+// является подмножеством множества set, иначе - ’ложь’.
+bool bitset_isSubset ( bitset subset , bitset set );
 
-bool bitset_in(bitset set, uint32_t value) {
-    if (value > set.maxValue) {
-        return false;
-    }
-    uint32_t index = value / 32;
-    uint32_t bitOffset = value % 32;
+// добавляет элемент value в множество set
+void bitset_insert ( bitset * set , unsigned int value );
 
-    return (set.values[index] & (1 << bitOffset)) != 0;
-}
+// удаляет элемент value из множества set
+void bitset_deleteElement ( bitset * set , unsigned int value );
 
-void bitset_insert(bitset *set, uint32_t value) {
-    if (value > set->maxValue) {
-        return;
-    }
+// возвращает объединение множеств set1 и set2
+bitset bitset_union ( bitset set1 , bitset set2 );
 
-    uint32_t index = value / 32;
-    uint32_t bitOffset = value % 32;
+// возвращает пересечение множеств set1 и set2
+bitset bitset_intersection ( bitset set1 , bitset set2 );
 
-    set->values[index] |= (1 << bitOffset);
-}
+// возвращает разность множеств set1 и set2
+bitset bitset_difference ( bitset set1 , bitset set2 );
 
-bool bitset_isEqual(bitset set1, bitset set2) {
-    if (set1.maxValue != set2.maxValue) {
-        return false;
-    }
+// возвращает симметрическую разность множеств set1 и set2
+bitset bitset_symmetricDifference ( bitset set1 , bitset set2 );
 
-    uint32_t arraySize = (set1.maxValue + 31) / 32;
-    for (uint32_t i = 0; i < arraySize; ++i) {
-        if (set1.values[i] != set2.values[i]) {
-            return false;
-        }
-    }
-    return true;
-}
+// возвращает дополнение до универсума множества set
+bitset bitset_complement ( bitset set );
 
-bool bitset_isSubset(bitset set1, bitset set2) {
-    if (set1.maxValue > set2.maxValue) {
-        return false;
-    }
-
-    uint32_t arraySize = (set1.maxValue + 31) / 32;
-    for (uint32_t i = 0; i < arraySize; ++i) {
-        if ((set1.values[i] & ~set2.values[i]) != 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-void bitset_deleteElements(bitset *set) {
-    free(set->values);
-    set->values = NULL;
-}
-
-bitset bitset_union(bitset set1, bitset set2) {
-    bitset result = bitset_create(set1.maxValue > set2.maxValue ? set1.maxValue : set2.maxValue);
-
-    for (uint32_t i = 0; i < result.maxValue; ++i) {
-        if (bitset_in(set1, i) || bitset_in(set2, i)) {
-            bitset_insert(&result, i);
-        }
-    }
-
-    return result;
-}
-
-bitset bitset_intersection(bitset set1, bitset set2) {
-    bitset result = bitset_create(set1.maxValue < set2.maxValue ? set1.maxValue : set2.maxValue);
-
-    for (uint32_t i = 0; i < result.maxValue; ++i) {
-        if (bitset_in(set1, i) && bitset_in(set2, i)) {
-            bitset_insert(&result, i);
-        }
-    }
-
-    return result;
-}
-
-bitset bitset_difference(bitset set1, bitset set2) {
-    bitset result = bitset_create(set1.maxValue);
-
-    for (uint32_t i = 0; i < set1.maxValue; ++i) {
-        if (bitset_in(set1, i) && !bitset_in(set2, i)) {
-            bitset_insert(&result, i);
-        }
-    }
-
-    return result;
-}
-
-bitset bitset_symmetricDifference(bitset set1, bitset set2) {
-    bitset result = bitset_create(set1.maxValue > set2.maxValue ? set1.maxValue : set2.maxValue);
-
-    for (uint32_t i = 0; i < result.maxValue; ++i) {
-        if ((bitset_in(set1, i) && !bitset_in(set2, i)) || (!bitset_in(set1, i) && bitset_in(set2, i))) {
-            bitset_insert(&result, i);
-        }
-    }
-
-    return result;
-}
-
-bitset bitset_complement(bitset set) {
-    bitset result = bitset_create(set.maxValue);
-
-    for (uint32_t i = 0; i < set.maxValue; ++i) {
-        if (!bitset_in(set, i)) {
-            bitset_insert(&result, i);
-        }
-    }
-
-    return result;
-}
-
-
-void bitset_print(bitset set) {
-    printf("{ ");
-    for (uint32_t i = 0; i <= set.maxValue; ++i) {
-        if (bitset_in(set, i)) {
-            printf("%u ", i);
-        }
-    }
-    printf("}\n");
-}
-
-#endif //UNTITLED1_BITSET_H
+// вывод множества set
+void bitset_print ( bitset set );

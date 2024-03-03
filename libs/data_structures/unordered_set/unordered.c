@@ -1,17 +1,9 @@
-#ifndef UNTITLED1_UNORDERED_H
-#define UNTITLED1_UNORDERED_H
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <assert.h>
 #include <malloc.h>
-
-typedef struct unordered_array_set {
-    int *data;// элементы множества
-    size_t size; // количество элементов в множестве
-    size_t capacity; // максимальное количество элементов в множестве, вместимость, мощность
-} unordered_array_set;
+#include "unordered.h"
 
 unordered_array_set unordered_array_set_create(size_t capacity) {
     unordered_array_set set;
@@ -38,10 +30,6 @@ size_t linearSearch(const int a[], const size_t n, int x) {
     return n;
 }
 
-/*size_t unordered_array_set_in(unordered_array_set* set, int value) {
-    return linearSearch(set -> data, set -> size, value);
-}
-*/
 bool unordered_array_set_isSubset(unordered_array_set subset, unordered_array_set set) {
     for (size_t i = 0; i < subset.size; i++) {
         bool found = false;
@@ -179,5 +167,3 @@ void unordered_array_set_print(unordered_array_set set) {
     }
     printf("}\n");
 }
-
-#endif //UNTITLED1_UNORDERED_H
